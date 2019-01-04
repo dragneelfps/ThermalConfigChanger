@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Thermal Config Changer</string>
+    <string name="note">Please use the options below to change the mode.\n
+        Evaluation is the mode with best performance.\n
+        Default is the \"default\" mode.</string>
+    <string name="selected">Selected: %1$s</string>
+</resources>

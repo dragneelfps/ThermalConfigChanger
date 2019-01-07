@@ -2,6 +2,12 @@
     <string name="app_name">Thermal Config Changer</string>
     <string name="note">Please use the options below to change the mode.\n
         Evaluation is the mode with best performance.\n
-        Default is the \"default\" mode.</string>
+        Default is the \"default\" mode.
+    </string>
     <string name="selected">Selected: %1$s</string>
+    <string name="about_details">
+        <b>Update 1.1:</b>[Experimental] You can enable the force set service from the above option menu which will \"try\"
+        to change the mode to the user selected mode from below options, whenever it is changed by the system or when the system restarts. \n\n
+        <b>Update 2.0</b>[Experimental]\n<i>~Enter Profiler~</i> \nYou can now have different modes based on the app.
+    </string>
 </resources>

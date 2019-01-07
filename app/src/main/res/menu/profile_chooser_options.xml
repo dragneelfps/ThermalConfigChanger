@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/enable_profiler"
+        android:checkable="true"
+        android:title="Enable" />
+    <item
+        android:id="@+id/enable_mode_notifcation"
+        android:checkable="true"
+        android:title="Show mode"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/open_about"
+        android:title="About &amp; Updates"
+        app:showAsAction="never" />
+</menu>

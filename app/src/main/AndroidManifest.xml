@@ -1,24 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="com.nooblabs.thermalconfigchanger">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.nooblabs.thermalconfigchanger">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-            android:name="com.nooblabs.thermalconfigchanger.App"
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.ProfileChooserActivity"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <activity
+            android:name=".activities.AboutActivity"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <service
+            android:name=".services.forceset.ForceSetService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".services.profiler.ProfilerService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver android:name=".receivers.ForceSetBootStartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".services.forceset.ToggleForceSetService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="toggle_force_set" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".services.profiler.ToggleProfilerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="toggle_profiler" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

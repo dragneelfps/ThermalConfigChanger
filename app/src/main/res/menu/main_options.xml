@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/fore_set"
+        android:checkable="true"
+        android:title="Force Set"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/profile_chooser"
+        android:title="Profile Chooser"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/open_about"
+        android:title="About &amp; Updates"
+        app:showAsAction="never" />
+</menu>

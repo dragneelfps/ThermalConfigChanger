@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -108,6 +109,9 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main_options, menu)
         menu?.findItem(R.id.fore_set)?.isChecked =
                 getSharedPreference(IS_FORCE_SET_ENABLE, false) as Boolean
+        menu?.findItem(R.id.reboot_persistence_mode)?.isChecked =
+                PreferenceManager.getDefaultSharedPreferences(this)
+                    .getBoolean("persistence_mode", false)
         return true
     }
 
@@ -120,6 +124,13 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     stopForceSetService()
                 }
+                true
+            }
+            R.id.reboot_persistence_mode -> {
+                item.isChecked = !item.isChecked
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean("persistence_mode", item.isChecked)
+                    .apply()
                 true
             }
             R.id.profile_chooser -> {

@@ -59,6 +59,11 @@
                 <action android:name="toggle_profiler" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".receivers.OnBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -9,6 +9,8 @@ import android.content.pm.PackageInfo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,7 +18,6 @@ import com.nooblabs.thermalconfigchanger.R
 import com.nooblabs.thermalconfigchanger.ThermalMode
 import com.nooblabs.thermalconfigchanger.adapters.ApplicationAdapter
 import com.nooblabs.thermalconfigchanger.extensions.*
-import com.nooblabs.thermalconfigchanger.services.profiler.ProfilerService
 import kotlinx.android.synthetic.main.activity_profile_chooser.*
 
 class ProfileChooserActivity : AppCompatActivity() {
@@ -41,7 +42,7 @@ class ProfileChooserActivity : AppCompatActivity() {
 
         nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        applicationAdapter = ApplicationAdapter()
+        applicationAdapter = ApplicationAdapter(this)
         applicationAdapter.modeChangeListener = object : ApplicationAdapter.OnModeChangeListener {
             override fun onModeChange(packageName: String, newMode: ThermalMode) {
                 putSharedPreference(packageName, newMode.value)
@@ -66,37 +67,11 @@ class ProfileChooserActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.profile_chooser_options, menu)
-        menu?.findItem(R.id.enable_profiler)?.let {
-            it.isChecked = getSharedPreference(IS_PROFILER_ENABLED, false) as Boolean
-        }
-        menu?.findItem(R.id.enable_mode_notifcation)?.let {
-            it.isChecked = getSharedPreference(SHOW_MODE_NOTIFICATION, false) as Boolean
-        }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?) =
         when (item?.itemId) {
-            R.id.enable_profiler -> {
-                item.isChecked = !item.isChecked
-                if (item.isChecked) {
-                    putSharedPreference(IS_PROFILER_ENABLED, true)
-                    enqueueWork<ProfilerService>(this, 2)
-                } else {
-                    putSharedPreference(IS_PROFILER_ENABLED, false)
-                }
-                true
-            }
-            R.id.enable_mode_notifcation -> {
-                item.isChecked = !item.isChecked
-                if (item.isChecked) {
-                    putSharedPreference(SHOW_MODE_NOTIFICATION, true)
-                } else {
-                    putSharedPreference(SHOW_MODE_NOTIFICATION, false)
-                    nm.cancel(5)
-                }
-                true
-            }
             R.id.open_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
                 true
@@ -108,28 +83,47 @@ class ProfileChooserActivity : AppCompatActivity() {
 
     private fun init() {
         if (checkForUsagePermission()) {
-            btn_grant_usage_permission.visibility = View.GONE
-            rv_app_list.visibility = View.VISIBLE
+            btn_grant_usage_permission.hide()
+            showAll(rv_app_list, app_filter, show_system_apps)
 
-            installedApplications = getInstalledApplications()
-
-            val list = ArrayList<Pair<PackageInfo, ThermalMode>>()
-
-            installedApplications.forEach {
-                val mode = getSharedPreference(it.packageName, ThermalMode.DEFAULT.value) as Int
-                list.add(Pair(it, ThermalMode.values().first { mode == it.value }))
-                log(list[list.size - 1].toString())
+            show_system_apps.setOnCheckedChangeListener { _, isChecked ->
+                initApps(isChecked)
+                app_filter.text = null
             }
+            app_filter.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val searchTerm = s?.toString() ?: ""
+                    applicationAdapter.filter(searchTerm)
+                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            })
 
-            applicationAdapter.list = list
-
+            initApps(show_system_apps.isChecked)
         } else {
             //ask for user permission
             btn_grant_usage_permission.visibility = View.VISIBLE
-            rv_app_list.visibility = View.GONE
+            hideAll(rv_app_list, app_filter, show_system_apps)
             btn_grant_usage_permission.setOnClickListener {
                 openUsageSettings()
             }
         }
+
+    }
+
+    private fun initApps(showSystemApps: Boolean) {
+        progress_bar.show()
+        installedApplications = getInstalledApplications(showSystemApps)
+
+        val list = ArrayList<Pair<PackageInfo, ThermalMode>>()
+
+        installedApplications.forEach {
+            val mode = getSharedPreference(it.packageName, ThermalMode.DEFAULT.value) as Int
+            list.add(Pair(it, ThermalMode.values().first { mode == it.value }))
+            log(list[list.size - 1].toString())
+        }
+
+        progress_bar.hide()
+        applicationAdapter.initializeData(list)
     }
 }

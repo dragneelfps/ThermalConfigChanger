@@ -1,5 +1,6 @@
 package com.nooblabs.thermalconfigchanger.adapters
 
+import android.content.Context
 import android.content.pm.PackageInfo
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,15 +14,10 @@ import com.nooblabs.thermalconfigchanger.ThermalMode
 import com.nooblabs.thermalconfigchanger.extensions.log
 import kotlinx.android.synthetic.main.item_app.view.*
 
-class ApplicationAdapter : RecyclerView.Adapter<ApplicationAdapter.ApplicationViewHolder>() {
+class ApplicationAdapter(private val context: Context) : RecyclerView.Adapter<ApplicationAdapter.ApplicationViewHolder>() {
 
-    var list: MutableList<Pair<PackageInfo, ThermalMode>> = ArrayList()
-        set(value) {
-            log("new data")
-            field.clear()
-            field.addAll(value)
-            notifyDataSetChanged()
-        }
+    private var list: List<Pair<PackageInfo, ThermalMode>> = ArrayList()
+    private val filteredList: MutableList<Pair<PackageInfo, ThermalMode>> = ArrayList()
     var modeChangeListener: OnModeChangeListener? = null
 
 //    fun updateList(newData: List<Pair<PackageInfo, ThermalMode>>)
@@ -29,13 +25,13 @@ class ApplicationAdapter : RecyclerView.Adapter<ApplicationAdapter.ApplicationVi
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ApplicationViewHolder =
         ApplicationViewHolder(LayoutInflater.from(p0.context).inflate(R.layout.item_app, p0, false))
 
-    override fun getItemCount() = list.size
+    override fun getItemCount() = filteredList.size
 
     override fun onBindViewHolder(holder: ApplicationViewHolder, position: Int) {
 
         val context = holder.itemView.context
 
-        val state = list[position]
+        val state = filteredList[position]
         val adapter = ArrayAdapter<ThermalMode>(
             context, android.R.layout.simple_spinner_dropdown_item,
             ThermalMode.values()
@@ -67,6 +63,24 @@ class ApplicationAdapter : RecyclerView.Adapter<ApplicationAdapter.ApplicationVi
                         )
                     }
                 }
+    }
+
+    fun initializeData(data: List<Pair<PackageInfo, ThermalMode>>) {
+        log("new data")
+        list = data
+        filter("")
+    }
+
+    fun filter(filterTerm: String) {
+        val pm = context.packageManager
+        filteredList.clear()
+        list.forEach { app ->
+            val appName = pm.getApplicationLabel(app.first.applicationInfo).toString()
+            if(appName.contains(filterTerm, true)) {
+                filteredList.add(app)
+            }
+        }
+        notifyDataSetChanged()
     }
 
     interface OnModeChangeListener {

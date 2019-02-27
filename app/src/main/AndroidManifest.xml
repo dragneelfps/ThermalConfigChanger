@@ -33,32 +33,9 @@
             android:name=".activities.AboutActivity"
             android:parentActivityName=".activities.MainActivity" />
 
-        <service
-            android:name=".services.forceset.ForceSetService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name=".services.profiler.ProfilerService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service android:name=".services.MainService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
 
-        <receiver android:name=".receivers.ForceSetBootStartReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".services.forceset.ToggleForceSetService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="toggle_force_set" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".services.profiler.ToggleProfilerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="toggle_profiler" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".receivers.OnBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

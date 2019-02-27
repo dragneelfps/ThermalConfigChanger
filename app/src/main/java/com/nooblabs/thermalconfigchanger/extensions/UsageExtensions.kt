@@ -57,7 +57,8 @@ fun Context.getForegroundPackage(): String? {
 
 }
 
-fun Context.getInstalledApplications(): List<PackageInfo> {
+fun Context.getInstalledApplications(showSystemApps: Boolean): List<PackageInfo> {
     val packages = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
-    return packages.filter { this.packageName != it.packageName && it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0 }
+    return packages.filter { this.packageName != it.packageName &&
+            (showSystemApps || (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0)) }
 }

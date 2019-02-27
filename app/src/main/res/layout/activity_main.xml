@@ -43,16 +43,97 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/note" />
 
+    <Switch
+        android:id="@+id/enable_service"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/service_toggle_on_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/thermal_modes"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"/>
+
+    <Switch
+        android:id="@+id/force_set_switch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/force_set_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/enable_service"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:padding="8dp"/>
+
+    <Switch
+        android:id="@+id/show_mode_switch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/show_current_mode_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/force_set_switch"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:padding="8dp"/>
+
+    <Switch
+        android:id="@+id/show_toast_switch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/show_toast_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/show_mode_switch"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:padding="8dp"/>
+
+    <Switch
+        android:id="@+id/profiler_switch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_profiler_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/show_toast_switch"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:padding="8dp"/>
+
+    <Button
+        android:id="@+id/open_profiler"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/open_profiler_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profiler_switch"
+        android:layout_margin="16dp"/>
+
+    <Switch
+        android:id="@+id/apply_on_boot_switch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/apply_on_boot_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/open_profiler"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:padding="8dp"/>
+
     <ImageView
         android:id="@+id/btn_xda"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/xda_play"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/go_to_xda"
         android:elevation="10dp"
-        android:contentDescription="Go to xda"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/xda_play"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

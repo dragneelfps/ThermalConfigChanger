@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -18,6 +17,7 @@ import android.widget.Toast
 import com.nooblabs.thermalconfigchanger.R
 import com.nooblabs.thermalconfigchanger.ThermalMode
 import com.nooblabs.thermalconfigchanger.extensions.*
+import com.nooblabs.thermalconfigchanger.services.MainService
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -42,28 +42,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val forceSetServiceSetChanged = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            log("force_set_state_changed")
-            invalidateOptionsMenu()
-        }
-    }
-
     private val forceSetReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             log("received signal from force_set service.")
-//            Toast.makeText(this@MainActivity, "received signal from force_set service.", Toast.LENGTH_SHORT)
-//                    .show()
-            init()
+            intent ?: return
+            tv_selected.text = getString(R.string.selected, intent.getStringExtra(FORCE_SET_PAYLOAD))
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //sets up notification channel if not set up already
-        createNotificationChannel()
 
         adapter = ArrayAdapter(
             this, android.R.layout.simple_spinner_dropdown_item,
@@ -73,8 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         btn_xda.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
-                data =
-                        Uri.parse("https://forum.xda-developers.com/poco-f1/themes/thermal-config-changer-pocophoneroot-t3886603")
+                data = Uri.parse(XDA_LINK)
             })
         }
     }
@@ -83,67 +71,99 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         invalidateOptionsMenu()
         init()
-        registerReceiver(forceSetReceiver, IntentFilter("force_set"))
-        registerReceiver(forceSetServiceSetChanged, IntentFilter("force_set_state_changed"))
+        registerReceiver(forceSetReceiver, IntentFilter(FORCE_SET_ACTION))
     }
 
     override fun onStop() {
         super.onStop()
         unregisterReceiver(forceSetReceiver)
-        unregisterReceiver(forceSetServiceSetChanged)
     }
 
     private fun init() {
         val currentSelection = currentActualMode
         if (currentSelection == null) {
-            tv_selected.text = "INVALID FILE CONTENTS"
+            tv_selected.text = getString(R.string.invalid_file_contents_error)
         } else {
             tv_selected.text = getString(R.string.selected, currentSelection.name)
         }
         thermal_modes.onItemSelectedListener = null
         thermal_modes.setSelection(adapter.getPosition(currentSelection), false)
         thermal_modes.onItemSelectedListener = onItemSelectedListener
+
+        val isServiceEnabled = getSharedPreference(IS_SERVICE_ENABLED, false) as Boolean
+
+        enable_service.isChecked = isServiceEnabled
+        toggleControls(isServiceEnabled)
+
+        enable_service.setOnCheckedChangeListener { btn, isChecked ->
+
+            btn.setText(if(isChecked) R.string.service_toggle_off_label else R.string.service_toggle_on_label)
+            putSharedPreference(IS_SERVICE_ENABLED, isChecked)
+
+            toggleControls(isChecked)
+
+            if(isChecked) {
+                MainService.startService(this)
+            }
+
+        }
+
+
+        force_set_switch.isChecked = getSharedPreference(IS_FORCE_SET_ENABLE, false) as Boolean
+        force_set_switch.setOnCheckedChangeListener { _, isChecked ->
+            putSharedPreference(IS_FORCE_SET_ENABLE, isChecked)
+        }
+
+
+        show_mode_switch.isChecked = getSharedPreference(SHOW_MODE_NOTIFICATION, false) as Boolean
+        show_mode_switch.setOnCheckedChangeListener { _, isChecked ->
+            putSharedPreference(SHOW_MODE_NOTIFICATION, isChecked)
+        }
+
+        show_toast_switch.isChecked = getSharedPreference(IS_TOAST_ENABLED, false) as Boolean
+        show_toast_switch.setOnCheckedChangeListener { _, isChecked ->
+            putSharedPreference(IS_TOAST_ENABLED, isChecked)
+        }
+
+        profiler_switch.isChecked = getSharedPreference(IS_PROFILER_ENABLED, false) as Boolean
+        profiler_switch.setOnCheckedChangeListener { _, isChecked ->
+            putSharedPreference(IS_PROFILER_ENABLED, isChecked)
+            open_profiler.isEnabled = isChecked
+        }
+
+        open_profiler.setOnClickListener {
+            startActivity(Intent(this, ProfileChooserActivity::class.java))
+        }
+
+        apply_on_boot_switch.isChecked = getSharedPreference(APPLY_ON_BOOT_ENABLED, false) as Boolean
+        apply_on_boot_switch.setOnCheckedChangeListener { _, isChecked ->
+            putSharedPreference(APPLY_ON_BOOT_ENABLED, isChecked)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_options, menu)
-        menu?.findItem(R.id.fore_set)?.isChecked =
-                getSharedPreference(IS_FORCE_SET_ENABLE, false) as Boolean
-        menu?.findItem(R.id.reboot_persistence_mode)?.isChecked =
-                PreferenceManager.getDefaultSharedPreferences(this)
-                    .getBoolean("persistence_mode", false)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.fore_set -> {
-                item.isChecked = !item.isChecked
-                if (item.isChecked) {
-                    startForceSetService()
-                } else {
-                    stopForceSetService()
-                }
-                true
-            }
-            R.id.reboot_persistence_mode -> {
-                item.isChecked = !item.isChecked
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putBoolean("persistence_mode", item.isChecked)
-                    .apply()
-                true
-            }
-            R.id.profile_chooser -> {
-                Intent(this, ProfileChooserActivity::class.java).apply {
-                    startActivity(this)
-                }
-                true
-            }
             R.id.open_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun toggleControls(isEnabled: Boolean) {
+        if(isEnabled) {
+            showAll(force_set_switch, show_mode_switch, show_toast_switch, profiler_switch,
+                    open_profiler, apply_on_boot_switch)
+        } else {
+            hideAll(force_set_switch, show_mode_switch, show_toast_switch, profiler_switch,
+                    open_profiler, apply_on_boot_switch)
         }
     }
 }

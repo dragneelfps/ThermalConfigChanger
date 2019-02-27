@@ -6,8 +6,25 @@
     </string>
     <string name="selected">Selected: %1$s</string>
     <string name="about_details">
-        <b>Update 1.1:</b>[Experimental] You can enable the force set service from the above option menu which will \"try\"
-        to change the mode to the user selected mode from below options, whenever it is changed by the system or when the system restarts. \n\n
-        <b>Update 2.0</b>[Experimental]\n<i>~Enter Profiler~</i> \nYou can now have different modes based on the app.
+        <!--<b>Update 1.1:</b>[Experimental] You can enable the force set service from the above option menu which will \"try\"-->
+        <!--to change the mode to the user selected mode from below options, whenever it is changed by the system or when the system restarts. \n\n-->
+        <!--<b>Update 2.0</b>[Experimental]\n<i>~Enter Profiler~</i> \nYou can now have different modes based on the app.-->
+        Source code at <a href="https://github.com/dragneelfps/ThermalConfigChanger/">GitHub</a>\n
+        Discussion at <a href="https://forum.xda-developers.com/poco-f1/themes/thermal-config-changer-pocophoneroot-t3886603">XDA</a>\n
+        Contact me at <a href="https://telegram.me/dragneelfps">Telegram</a>\n
     </string>
+    <string name="force_set_label">Force Set</string>
+    <string name="apply_on_boot_label">Apply on boot</string>
+    <string name="show_current_mode_label">Show Current Mode</string>
+    <string name="service_toggle_on_label">Turn on the real stuff</string>
+    <string name="service_toggle_off_label">Turn off the real stuff :(</string>
+    <string name="invalid_file_contents_error">INVALID FILE CONTENTS</string>
+    <string name="enable_profiler_label">Enable Profiler</string>
+    <string name="open_profiler_label">Open Profiler</string>
+    <string name="app_filter_hint">Search App</string>
+    <string name="show_system_apps_label">Show system apps</string>
+    <string name="show_toast_label">Show Toast on Mode change</string>
+    <string name="usage_access_not_found_label">Grant Usage Access</string>
+    <string name="about_label"><![CDATA[About & Updates]]></string>
+    <string name="go_to_xda">Go to xda</string>
 </resources>

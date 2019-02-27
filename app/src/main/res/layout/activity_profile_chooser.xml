@@ -6,15 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".activities.ProfileChooserActivity">
 
+    <EditText
+        android:id="@+id/app_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp"
+        android:maxLines="1"
+        android:hint="@string/app_filter_hint"
+        android:visibility="gone"/>
+
+    <Switch
+        android:id="@+id/show_system_apps"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/show_system_apps_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_filter"
+        android:layout_margin="16dp"
+        android:visibility="gone"/>
+
     <Button
         android:id="@+id/btn_grant_usage_permission"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Grant Usage Access"
+        android:text="@string/usage_access_not_found_label"
         android:layout_margin="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/show_system_apps"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_app_list"
@@ -24,5 +47,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_grant_usage_permission"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

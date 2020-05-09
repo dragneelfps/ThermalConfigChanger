@@ -7,8 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageInfo
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
@@ -49,7 +49,8 @@ class ProfileChooserActivity : AppCompatActivity() {
             }
         }
 
-        rv_app_list.layoutManager = LinearLayoutManager(this)
+        rv_app_list.layoutManager =
+            LinearLayoutManager(this)
         rv_app_list.adapter = applicationAdapter
     }
 

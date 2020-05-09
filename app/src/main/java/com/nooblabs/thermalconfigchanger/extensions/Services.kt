@@ -3,7 +3,7 @@ package com.nooblabs.thermalconfigchanger.extensions
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.JobIntentService
+import androidx.core.app.JobIntentService
 
 inline fun <reified T : JobIntentService> enqueueWork(context: Context, jobId: Int) {
     val intent = Intent(context, T::class.java)

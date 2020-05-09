@@ -6,8 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.support.v4.app.JobIntentService
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.JobIntentService
+import androidx.core.app.NotificationCompat
 import com.nooblabs.thermalconfigchanger.R
 import com.nooblabs.thermalconfigchanger.ThermalMode
 import com.nooblabs.thermalconfigchanger.extensions.*
